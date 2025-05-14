@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -53,11 +53,7 @@
       background-color: #f1f1f1;
       border-radius: 10px;
       cursor: pointer;
-      user-select: none;
     }
-
-    .cell.x { color: #dc3545; } /* Merah */
-    .cell.o { color: #0d6efd; } /* Biru */
 
     .cell:hover {
       background-color: #e0e0e0;
@@ -132,7 +128,7 @@
   <section id="play">
     <div class="board" id="board"></div>
     <div id="status"></div>
-    <button class="btn btn-secondary mt-3" onclick="resetGame()" type="button">Ulangi Game</button>
+    <button class="btn btn-secondary mt-3" onclick="resetGame()">Ulangi Game</button>
   </section>
 
   <!-- About Section -->
@@ -158,7 +154,7 @@
   </section>
 
   <!-- Credits -->
-  <section id="credits">
+  <section id="Credits">
     <h2>Credits</h2>
     <p>Dibuat oleh: Dhea dan Kayla</p>
     <p>Desain & Logika Game: Dhea dan Kayla</p>
@@ -190,8 +186,6 @@
       board.forEach((cell, index) => {
         const cellDiv = document.createElement("div");
         cellDiv.classList.add("cell");
-        if (cell === "X") cellDiv.classList.add("x");
-        if (cell === "O") cellDiv.classList.add("o");
         cellDiv.innerText = cell;
         cellDiv.addEventListener("click", () => makeMove(index));
         boardDiv.appendChild(cellDiv);
@@ -205,7 +199,7 @@
       if (checkWinner()) return;
 
       currentPlayer = currentPlayer === "X" ? "O" : "X";
-      statusDiv.innerText = Giliran: ${currentPlayer};
+      statusDiv.innerText = 'Giliran: ${currentPlayer}';
 
       if (modeSelect.value === "vsComp" && currentPlayer === "O") {
         setTimeout(computerMove, 500);
@@ -223,7 +217,7 @@
       for (let combo of winCombos) {
         const [a, b, c] = combo;
         if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-          statusDiv.innerText = 🎉 Pemain ${board[a]} Menang!;
+          statusDiv.innerText =' 🎉 Pemain ${board[a]} Menang!';
           gameActive = false;
           return true;
         }
@@ -241,11 +235,11 @@
       currentPlayer = "X";
       gameActive = true;
       drawBoard();
-      statusDiv.innerText = Giliran: ${currentPlayer};
+      statusDiv.innerText =' Giliran: ${currentPlayer}';
     }
 
     drawBoard();
-    statusDiv.innerText = Giliran: ${currentPlayer};
+    statusDiv.innerText = 'Giliran: ${currentPlayer}';
   </script>
 
 </body>
