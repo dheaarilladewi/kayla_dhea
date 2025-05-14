@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>XOX Game</title>
+  <!-- Bootstrap 5 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #fffdf7;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+    }
+
+    nav {
+      background-color: #1e1e2f;
+      color: white;
+    }
+
+    .nav-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      margin-left: 20px;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+      color: #ffd700;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      gap: 10px;
+      justify-content: center;
+      margin: 20px auto;
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      font-size: 2.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f1f1f1;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .cell:hover {
+      background-color: #e0e0e0;
+    }
+
+    #status {
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    footer {
+      background-color: #1e1e2f;
+      color: white;
+      padding: 20px 0;
+    }
+
+    section {
+      padding: 40px 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    #about {
+      background-color: #f0f0f0;
+    }
+
+    #how-to-play {
+      background-color: #e9ecef;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    p, li {
+      font-size: 1.1rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="d-flex justify-content-between align-items-center p-3 sticky-top">
+    <div class="nav-title">XOX</div>
+    <div>
+      <a href="#about">About</a>
+      <a href="#how-to-play">How to Play</a>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="mt-4">
+    <h1>❌⭕ XOX - Tic Tac Toe</h1>
+    <p>Pilih mode dan mainkan game klasik ini!</p>
+  </header>
+
+  <!-- Game Mode Select -->
+  <section>
+    <div class="mb-3">
+      <label for="mode" class="form-label">Mode Permainan:</label>
+      <select id="mode" class="form-select w-50 mx-auto" onchange="resetGame()">
+        <option value="2p">Dua Pemain</option>
+        <option value="vsComp">Lawan Komputer</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- Game Board -->
+  <section id="play">
+    <div class="board" id="board"></div>
+    <div id="status"></div>
+    <button class="btn btn-secondary mt-3" onclick="resetGame()">Ulangi Game</button>
+  </section>
+
+  <!-- About Section -->
+  <section id="about">
+    <h2>About</h2>
+    <p>Game XOX adalah versi digital dari permainan klasik silang dan bulat yang sederhana namun menghibur. 
+      Game ini dapat dimainkan oleh dua pemain secara bergantian, atau kamu juga bisa menantang komputer.</p>
+    <p>Tujuan dari permainan ini adalah untuk menyusun tiga simbol yang sama secara horizontal, vertikal, atau diagonal pada papan 3x3.</p>
+    <p>Cocok dimainkan untuk mengisi waktu luang, mengasah strategi, atau sekadar bersenang-senang bersama teman.</p>
+  </section>
+
+  <!-- How to Play Section -->
+  <section id="how-to-play">
+    <h2>How to Play the Game</h2>
+    <ol class="text-start">
+      <li>Pilih mode permainan: <strong>Dua Pemain</strong> atau <strong>Lawan Komputer</strong>.</li>
+      <li>Pemain pertama menggunakan <strong>X</strong>, dan pemain kedua atau komputer menggunakan <strong>O</strong>.</li>
+      <li>Klik pada salah satu kotak di papan untuk meletakkan simbolmu.</li>
+      <li>Susun tiga simbol yang sama secara <em>horizontal</em>, <em>vertikal</em>, atau <em>diagonal</em> untuk menang.</li>
+      <li>Jika semua kotak terisi dan tidak ada pemenang, maka hasilnya <strong>seri</strong>.</li>
+      <li>Gunakan tombol <strong>"Ulangi Game"</strong> untuk mulai ulang.</li>
+    </ol>
+  </section>
+
+  <!-- Credits -->
+  <section id="Credits">
+    <h2>Credits</h2>
+    <p>Dibuat oleh: Dhea dan Kayla</p>
+    <p>Desain & Logika Game: Dhea dan Kayla</p>
+    <p>HTML, CSS, JavaScript & Bootstrap</p>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; Game Website. Dhea Afrilla Dewi dan Kayla Khairunnisa</p>
+  </footer>
+
+  <!-- Script Game -->
+  <script>
+    let board = Array(9).fill("");
+    let currentPlayer = "X";
+    let gameActive = true;
+    const boardDiv = document.getElementById("board");
+    const statusDiv = document.getElementById("status");
+    const modeSelect = document.getElementById("mode");
+
+    const winCombos = [
+      [0,1,2], [3,4,5], [6,7,8],
+      [0,3,6], [1,4,7], [2,5,8],
+      [0,4,8], [2,4,6]
+    ];
+
+    function drawBoard() {
+      boardDiv.innerHTML = "";
+      board.forEach((cell, index) => {
+        const cellDiv = document.createElement("div");
+        cellDiv.classList.add("cell");
+        cellDiv.innerText = cell;
+        cellDiv.addEventListener("click", () => makeMove(index));
+        boardDiv.appendChild(cellDiv);
+      });
+    }
+
+    function makeMove(index) {
+      if (board[index] || !gameActive) return;
+      board[index] = currentPlayer;
+      drawBoard();
+      if (checkWinner()) return;
+
+      currentPlayer = currentPlayer === "X" ? "O" : "X";
+      statusDiv.innerText = Giliran: ${currentPlayer};
+
+      if (modeSelect.value === "vsComp" && currentPlayer === "O") {
+        setTimeout(computerMove, 500);
+      }
+    }
+
+    function computerMove() {
+      let available = board.map((val, idx) => val === "" ? idx : null).filter(val => val !== null);
+      if (available.length === 0) return;
+      let choice = available[Math.floor(Math.random() * available.length)];
+      makeMove(choice);
+    }
+
+    function checkWinner() {
+      for (let combo of winCombos) {
+        const [a, b, c] = combo;
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+          statusDiv.innerText = 🎉 Pemain ${board[a]} Menang!;
+          gameActive = false;
+          return true;
+        }
+      }
+      if (!board.includes("")) {
+        statusDiv.innerText = "😐 Seri!";
+        gameActive = false;
+        return true;
+      }
+      return false;
+    }
+
+    function resetGame() {
+      board = Array(9).fill("");
+      currentPlayer = "X";
+      gameActive = true;
+      drawBoard();
+      statusDiv.innerText = Giliran: ${currentPlayer};
+    }
+
+    drawBoard();
+    statusDiv.innerText = Giliran: ${currentPlayer};
+  </script>
+
+</body>
+</html>
