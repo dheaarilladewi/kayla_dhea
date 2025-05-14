@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -53,7 +53,11 @@
       background-color: #f1f1f1;
       border-radius: 10px;
       cursor: pointer;
+      user-select: none;
     }
+
+    .cell.x { color: #dc3545; } /* Merah */
+    .cell.o { color: #0d6efd; } /* Biru */
 
     .cell:hover {
       background-color: #e0e0e0;
@@ -128,7 +132,7 @@
   <section id="play">
     <div class="board" id="board"></div>
     <div id="status"></div>
-    <button class="btn btn-secondary mt-3" onclick="resetGame()">Ulangi Game</button>
+    <button class="btn btn-secondary mt-3" onclick="resetGame()" type="button">Ulangi Game</button>
   </section>
 
   <!-- About Section -->
@@ -154,7 +158,7 @@
   </section>
 
   <!-- Credits -->
-  <section id="Credits">
+  <section id="credits">
     <h2>Credits</h2>
     <p>Dibuat oleh: Dhea dan Kayla</p>
     <p>Desain & Logika Game: Dhea dan Kayla</p>
@@ -186,6 +190,8 @@
       board.forEach((cell, index) => {
         const cellDiv = document.createElement("div");
         cellDiv.classList.add("cell");
+        if (cell === "X") cellDiv.classList.add("x");
+        if (cell === "O") cellDiv.classList.add("o");
         cellDiv.innerText = cell;
         cellDiv.addEventListener("click", () => makeMove(index));
         boardDiv.appendChild(cellDiv);
